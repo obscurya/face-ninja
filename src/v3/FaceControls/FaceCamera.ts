@@ -27,7 +27,7 @@ class FaceCamera {
 
     await this.video.play()
 
-    const diagonal = Math.sqrt(this.width ** 2 + this.height ** 2)
+    const diagonal = Math.hypot(this.width, this.height)
 
     this.focalLength = (diagonal / 2) * (1 / Math.tan(this.diagonalFov / 2))
     this.plane.constant = this.focalLength

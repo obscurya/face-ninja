@@ -11,12 +11,7 @@ type FaceControlsConfig = {
   containerId: string
   diagonalFov: number
   irisWidth?: number
-  screenProps: {
-    x: number
-    y: number
-    width: number
-    height: number
-  }
+  screenDiagonal: number
   cb: (faceControls: FaceControls) => void
 }
 
@@ -25,18 +20,12 @@ class FaceControls {
   camera: FaceCamera
   tracker!: FaceTracker
   irisWidth: number
-  screenReal: {
-    halfScale: THREE.Vector3
-    center: THREE.Vector3
-  }
+  screenHalfScaleReal: THREE.Vector3
   screen = {
-    center: new THREE.Vector3(),
     halfScale: new THREE.Vector3(),
+    center: new THREE.Vector3(),
   }
   target = new THREE.Vector3()
-  // https://mp-lab.ru/filtr_kalmana_dlya_nachinayushchih/
-  // https://habr.com/ru/articles/166693/
-  // https://github.com/piercus/kalman-filter
   kalman = new KalmanFilter({
     observation: {
       name: 'sensor',
@@ -53,7 +42,7 @@ class FaceControls {
     containerId,
     diagonalFov,
     irisWidth = 12,
-    screenProps,
+    screenDiagonal,
     cb,
   }: FaceControlsConfig) {
     this.container = document.createElement('div')
@@ -62,15 +51,14 @@ class FaceControls {
 
     this.irisWidth = irisWidth
 
-    const halfScale = new THREE.Vector3(
-      screenProps.width / 2,
-      screenProps.height / 2
-    )
+    const ppMm =
+      Math.hypot(window.screen.width, window.screen.height) /
+      (screenDiagonal * 2.54 * 10)
 
-    this.screenReal = {
-      center: new THREE.Vector3(screenProps.x, -screenProps.y).add(halfScale),
-      halfScale,
-    }
+    this.screenHalfScaleReal = new THREE.Vector3(
+      SCREEN_HALF_WIDTH / ppMm,
+      SCREEN_HALF_HEIGHT / ppMm
+    )
 
     this.camera = new FaceCamera(this.container, diagonalFov)
     this.camera.init().then(async () => {
@@ -86,11 +74,11 @@ class FaceControls {
 
     const irisRatio = this.tracker.irisWidthInPx / this.irisWidth
 
-    this.screen.center.copy(this.screenReal.center).multiplyScalar(irisRatio)
-
     this.screen.halfScale
-      .copy(this.screenReal.halfScale)
+      .copy(this.screenHalfScaleReal)
       .multiplyScalar(irisRatio)
+
+    this.screen.center.set(0, this.screen.halfScale.y, 0)
 
     this.target
       .copy(this.tracker.intersection)
@@ -100,7 +88,6 @@ class FaceControls {
     this.target.setX(-this.target.x * SCREEN_HALF_WIDTH + SCREEN_HALF_WIDTH)
     this.target.setY(this.target.y * SCREEN_HALF_HEIGHT + SCREEN_HALF_HEIGHT)
 
-    // https://github.com/piercus/kalman-filter#online-filter
     this.kalmanState = this.kalman.filter({
       previousCorrected: this.kalmanState,
       observation: [this.target.x, this.target.y],

@@ -35,9 +35,7 @@ class FaceCamera {
 
     await this.video.play()
 
-    // https://learnopencv.com/approximate-focal-length-for-webcams-and-cell-phone-cameras/
-
-    const diagonal = Math.sqrt(this.width ** 2 + this.height ** 2)
+    const diagonal = Math.hypot(this.width, this.height)
 
     this.focalLength = (diagonal / 2) * (1 / Math.tan(this.diagonalFov / 2))
     this.plane.constant = this.focalLength

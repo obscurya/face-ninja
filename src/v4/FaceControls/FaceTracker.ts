@@ -14,8 +14,6 @@ class FaceTracker {
   async init() {
     const wasmFileset = await FilesetResolver.forVisionTasks('./wasm')
 
-    // https://developers.google.com/mediapipe/solutions/setup_web
-    // https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js
     this.landmarker = await FaceLandmarker.createFromOptions(wasmFileset, {
       baseOptions: {
         modelAssetPath: './face_landmarker.task',
@@ -23,7 +21,6 @@ class FaceTracker {
       },
       runningMode: 'VIDEO',
       numFaces: 1,
-      // https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html
       outputFacialTransformationMatrixes: true,
       outputFaceBlendshapes: false,
     })
@@ -53,7 +50,6 @@ class FaceTracker {
     this.direction.setY(-this.direction.y)
     this.direction.setZ(-this.direction.z)
 
-    // https://github.com/google/mediapipe/tree/56c26dba84668e2785fc0ae98e5e920272c69ac4/mediapipe/modules/face_geometry/data
     this.ray.set(this.points[168], this.direction)
     this.ray.intersectPlane(camera.plane, this.intersection)
   }
