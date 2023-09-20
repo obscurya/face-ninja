@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background-color: #111;
+  overflow: hidden;
+}
+
+#faceContainer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  max-width: 500px;
+}
+
+#faceContainer > * {
+  max-width: 100%;
+  height: auto !important;
+}
+
+#faceContainer video {
+  visibility: hidden;
+}
+
+#faceContainer canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#fruit {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+#screen {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 9;
+}
