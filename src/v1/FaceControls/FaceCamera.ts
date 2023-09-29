@@ -28,6 +28,14 @@ class FaceCamera {
   get height() {
     return this.video.videoHeight
   }
+
+  get aspectRatio() {
+    return this.width / this.height
+  }
+
+  get diagonal() {
+    return Math.hypot(this.width, this.height)
+  }
 }
 
 export default FaceCamera

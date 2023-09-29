@@ -15,6 +15,14 @@ class FaceCamera {
     return this.video.videoHeight
   }
 
+  get aspectRatio() {
+    return this.width / this.height
+  }
+
+  get diagonal() {
+    return Math.hypot(this.width, this.height)
+  }
+
   async init() {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {

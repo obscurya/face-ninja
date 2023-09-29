@@ -23,20 +23,17 @@ class FaceTracker {
   }
 
   update(camera: FaceCamera) {
-    const { faceLandmarks } = this.landmarker.detectForVideo(
-      camera.video,
-      performance.now()
-    )
-
-    const [landmarks] = faceLandmarks
+    const {
+      faceLandmarks: [landmarks],
+    } = this.landmarker.detectForVideo(camera.video, performance.now())
 
     if (!landmarks) return
 
     landmarks.forEach(({ x, y, z }, i) => {
       this.points[i].set(
-        x * camera.width - camera.width / 2,
-        y * camera.height - camera.height / 2,
-        z * camera.width
+        (x - 0.5) * camera.width * 1,
+        (y - 0.5) * camera.height * -1,
+        (z - 0) * camera.width * -1
       )
     })
   }

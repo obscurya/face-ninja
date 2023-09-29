@@ -26,28 +26,23 @@ class FaceTracker {
   }
 
   update(camera: FaceCamera) {
-    const { faceLandmarks, facialTransformationMatrixes } =
-      this.landmarker.detectForVideo(camera.video, performance.now())
-
-    const [landmarks] = faceLandmarks
+    const {
+      faceLandmarks: [landmarks],
+      facialTransformationMatrixes: [transformationMatrix],
+    } = this.landmarker.detectForVideo(camera.video, performance.now())
 
     if (!landmarks) return
 
     landmarks.forEach(({ x, y, z }, i) => {
       this.points[i].set(
-        x * camera.width - camera.width / 2,
-        y * camera.height - camera.height / 2,
-        z * camera.width
+        (x - 0.5) * camera.width * 1,
+        (y - 0.5) * camera.height * -1,
+        (z - 0) * camera.width * -1
       )
     })
 
-    const [transformationMatrix] = facialTransformationMatrixes
-
     this.transform.fromArray(transformationMatrix.data)
     this.direction.setFromMatrixColumn(this.transform, 2)
-
-    this.direction.setY(-this.direction.y)
-    this.direction.setZ(-this.direction.z)
 
     this.ray.set(this.points[168], this.direction)
   }

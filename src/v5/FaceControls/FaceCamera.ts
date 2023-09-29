@@ -36,7 +36,7 @@ class FaceCamera {
   async init() {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: { ideal: 'user' },
+        facingMode: { exact: 'user' },
         width: { ideal: 4096 },
         height: { ideal: 2160 },
       },

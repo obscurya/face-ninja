@@ -54,12 +54,33 @@ export const createScene = (faceControls: FaceControls) => {
     })
   )
 
+  // const face = new THREE.Mesh(
+  //   faceGeometry,
+  //   new THREE.MeshStandardMaterial({
+  //     side: THREE.DoubleSide,
+  //     color: 0xed4344,
+  //     flatShading: true,
+  //   })
+  // )
+
   scene.add(face)
+
+  // const light = new THREE.DirectionalLight(0xffffff)
+
+  // light.lookAt(0, 0, 0)
+  // light.position.setZ(-1)
+
+  // scene.add(light)
+
+  // const ambient = new THREE.AmbientLight(0xffffff, 0.5)
+
+  // scene.add(ambient)
 
   const direction = new THREE.ArrowHelper(
     new THREE.Vector3(),
     new THREE.Vector3(),
     50,
+    // 1000,
     0xed4344,
     15,
     10
@@ -85,6 +106,17 @@ export const createScene = (faceControls: FaceControls) => {
 
   scene.add(target)
 
+  const screen = new THREE.Mesh(
+    new THREE.PlaneGeometry(),
+    new THREE.MeshBasicMaterial({
+      color: 0xfff200,
+      side: THREE.DoubleSide,
+    })
+  )
+
+  screen.position.setZ(faceControls.camera.focalLength)
+  scene.add(screen)
+
   const render = () => {
     face.geometry.setFromPoints(faceControls.tracker.points)
     face.geometry.computeVertexNormals()
@@ -93,6 +125,10 @@ export const createScene = (faceControls: FaceControls) => {
     direction.setDirection(faceControls.tracker.ray.direction)
 
     target.position.copy(faceControls.tracker.intersection)
+
+    screen.position.setX(faceControls.screen.center.x)
+    screen.position.setY(faceControls.screen.center.y)
+    screen.scale.copy(faceControls.screen.halfScale).multiplyScalar(2)
 
     renderer.render(scene, camera)
 

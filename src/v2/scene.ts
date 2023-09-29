@@ -5,11 +5,15 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import FaceControls from './FaceControls/FaceControls'
 
 export const createScene = (faceControls: FaceControls) => {
-  const aspectRatio = faceControls.camera.width / faceControls.camera.height
-  const camera = new THREE.PerspectiveCamera(50, aspectRatio, 0.1, 2000)
+  const camera = new THREE.PerspectiveCamera(
+    50,
+    faceControls.camera.aspectRatio,
+    0.1,
+    2000
+  )
 
-  camera.position.setZ(-800)
-  camera.lookAt(new THREE.Vector3(0))
+  camera.position.setZ(800)
+  camera.lookAt(0, 0, 0)
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -22,8 +26,6 @@ export const createScene = (faceControls: FaceControls) => {
   faceControls.container.appendChild(renderer.domElement)
 
   const scene = new THREE.Scene()
-
-  scene.scale.set(-1, -1, 1)
 
   new OrbitControls(camera, renderer.domElement)
 

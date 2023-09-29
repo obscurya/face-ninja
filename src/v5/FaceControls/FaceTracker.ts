@@ -48,6 +48,13 @@ class FaceTracker {
     this.ray.set(this.points[168], this.direction)
     this.ray.intersectPlane(camera.plane, this.intersection)
   }
+
+  get irisWidthInPx() {
+    const rightIrisWidth = this.points[469].distanceTo(this.points[471])
+    const leftIrisWidth = this.points[474].distanceTo(this.points[476])
+
+    return (rightIrisWidth + leftIrisWidth) / 2
+  }
 }
 
 export default FaceTracker
