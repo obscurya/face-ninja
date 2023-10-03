@@ -6,7 +6,7 @@
 
 body {
   height: 100vh;
-  background-color: #111;
+  /* background-color: #111; */
   overflow: hidden;
 }
 
@@ -15,22 +15,36 @@ body {
   bottom: 0;
   right: 0;
   display: flex;
-  max-width: 500px;
+  max-width: 700px;
+
+  > * {
+    max-width: 100%;
+  }
+
+  & video {
+    visibility: hidden;
+  }
+
+  & canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: auto !important;
+  }
+
+  & div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
 }
 
-#faceContainer > * {
-  max-width: 100%;
-  height: auto !important;
-}
-
-#faceContainer video {
-  visibility: hidden;
-}
-
-#faceContainer canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
+#coords {
+  color: white;
+  font: 18px monospace;
+  padding: 2px 4px;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 #fruit {
@@ -44,6 +58,6 @@ body {
 #screen {
   position: fixed;
   bottom: 0;
-  right: 0;
+  left: 0;
   z-index: 9;
 }

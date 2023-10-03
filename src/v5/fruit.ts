@@ -16,6 +16,7 @@ const HEIGHT = window.screen.height
 
 const BLADE = {
   TRAIL_LENGTH: 10,
+  // TRAIL_LENGTH: 1,
   HEAD_RADIUS: 10,
   COLOR: '#ed4344',
 }
@@ -148,6 +149,7 @@ export const fruitNinja = (faceControls: FaceControls) => {
       width: WIDTH,
       height: HEIGHT,
       wireframes: false,
+      // background: 'white',
     },
   })
 

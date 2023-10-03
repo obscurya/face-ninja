@@ -34,11 +34,23 @@ class FaceTracker {
 
     if (!landmarks) return
 
+    // landmarks.forEach(({ x, y, z }, i) => {
+    //   this.points[i].set(x * camera.width, y * camera.height, z * camera.width)
+    // })
+
+    // landmarks.forEach(({ x, y, z }, i) => {
+    //   this.points[i].set(
+    //     (x - 0.5) * camera.width,
+    //     (y - 0.5) * camera.height,
+    //     z * camera.width
+    //   )
+    // })
+
     landmarks.forEach(({ x, y, z }, i) => {
       this.points[i].set(
         (x - 0.5) * camera.width * 1,
         (y - 0.5) * camera.height * -1,
-        (z - 0) * camera.width * -1
+        z * camera.width * -1
       )
     })
 

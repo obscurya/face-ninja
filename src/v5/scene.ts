@@ -1,6 +1,10 @@
 import { FaceLandmarker } from '@mediapipe/tasks-vision'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import {
+  CSS2DRenderer,
+  CSS2DObject,
+} from 'three/addons/renderers/CSS2DRenderer.js'
 
 import FaceControls from './FaceControls/FaceControls'
 
@@ -54,33 +58,14 @@ export const createScene = (faceControls: FaceControls) => {
     })
   )
 
-  // const face = new THREE.Mesh(
-  //   faceGeometry,
-  //   new THREE.MeshStandardMaterial({
-  //     side: THREE.DoubleSide,
-  //     color: 0xed4344,
-  //     flatShading: true,
-  //   })
-  // )
-
   scene.add(face)
-
-  // const light = new THREE.DirectionalLight(0xffffff)
-
-  // light.lookAt(0, 0, 0)
-  // light.position.setZ(-1)
-
-  // scene.add(light)
-
-  // const ambient = new THREE.AmbientLight(0xffffff, 0.5)
-
-  // scene.add(ambient)
 
   const direction = new THREE.ArrowHelper(
     new THREE.Vector3(),
     new THREE.Vector3(),
-    50,
-    // 1000,
+    // 50,
+    1000,
+    // 200,
     0xed4344,
     15,
     10
@@ -96,28 +81,79 @@ export const createScene = (faceControls: FaceControls) => {
 
   scene.add(cameraHelper)
 
+  camera.position.set(500, 200, 1100)
+  camera.lookAt(0, 0, 0)
+  camera.position.set(450, 180, 1120)
+
+  const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(1000, 500),
+    new THREE.MeshBasicMaterial({
+      color: 0x156289,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.5,
+    })
+  )
+
+  plane.position.set(0, 0, faceControls.camera.plane.constant)
+
+  // scene.add(plane)
+
   const target = new THREE.Mesh(
     new THREE.SphereGeometry(10),
-    new THREE.MeshBasicMaterial({
-      color: 0xed4344,
+    new THREE.MeshNormalMaterial({
+      // color: 0xed4344,
       side: THREE.DoubleSide,
     })
   )
 
   scene.add(target)
 
+  const irises = [...new Array(2)].map(
+    () =>
+      new THREE.Mesh(
+        new THREE.CircleGeometry(1),
+        new THREE.MeshBasicMaterial({ color: 0xed4344 })
+      )
+  )
+
+  scene.add(...irises)
+
   const screen = new THREE.Mesh(
     new THREE.PlaneGeometry(),
     new THREE.MeshBasicMaterial({
       color: 0xfff200,
       side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.5,
     })
   )
 
   screen.position.setZ(faceControls.camera.focalLength)
   scene.add(screen)
 
+  const coordsElement = document.createElement('div')
+
+  coordsElement.id = 'coords'
+
+  const coordsLabel = new CSS2DObject(coordsElement)
+
+  coordsLabel.position.set(0, 0, 0)
+  coordsLabel.center.set(-0.3, 0.1)
+  target.add(coordsLabel)
+
+  const labelRenderer = new CSS2DRenderer()
+
+  labelRenderer.setSize(
+    faceControls.container.clientWidth,
+    faceControls.container.clientHeight
+  )
+
+  faceControls.container.appendChild(labelRenderer.domElement)
+
   const render = () => {
+    // console.log(camera.position.x, camera.position.y, camera.position.z)
+
     face.geometry.setFromPoints(faceControls.tracker.points)
     face.geometry.computeVertexNormals()
 
@@ -126,11 +162,27 @@ export const createScene = (faceControls: FaceControls) => {
 
     target.position.copy(faceControls.tracker.intersection)
 
+    coordsElement.textContent = [faceControls.target.x, faceControls.target.y]
+      .map(value => value.toFixed(2))
+      .join(', ')
+
+    irises.forEach((iris, i) => {
+      const index = i ? 473 : 468
+
+      iris.position.copy(faceControls.tracker.points[index])
+      iris.scale.set(
+        faceControls.tracker.irisWidthInPx / 2,
+        faceControls.tracker.irisWidthInPx / 2,
+        1
+      )
+    })
+
     screen.position.setX(faceControls.screen.center.x)
     screen.position.setY(faceControls.screen.center.y)
     screen.scale.copy(faceControls.screen.halfScale).multiplyScalar(2)
 
     renderer.render(scene, camera)
+    labelRenderer.render(scene, camera)
 
     requestAnimationFrame(render)
   }

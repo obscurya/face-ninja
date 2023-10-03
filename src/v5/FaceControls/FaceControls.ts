@@ -7,10 +7,6 @@ import FaceTracker from './FaceTracker'
 const SCREEN_HALF_WIDTH = window.screen.width / 2
 const SCREEN_HALF_HEIGHT = window.screen.height / 2
 
-const calcPpMm = (screenDiagonal: number) =>
-  Math.hypot(window.screen.width, window.screen.height) /
-  (screenDiagonal * 2.54 * 10)
-
 type FaceControlsConfig = {
   containerId: string
   diagonalFov: number
@@ -27,7 +23,7 @@ class FaceControls {
   screenHalfScaleReal: THREE.Vector3
   screen = {
     halfScale: new THREE.Vector3(),
-    center: new THREE.Vector3(),
+    center: new THREE.Vector3(0, 0, 0),
   }
   target = new THREE.Vector3()
   kalman = new KalmanFilter({
@@ -55,7 +51,9 @@ class FaceControls {
 
     this.irisWidth = irisWidth
 
-    const ppMm = calcPpMm(screenDiagonal)
+    const ppMm =
+      Math.hypot(window.screen.width, window.screen.height) /
+      (screenDiagonal * 2.54 * 10)
 
     this.screenHalfScaleReal = new THREE.Vector3(
       SCREEN_HALF_WIDTH / ppMm,
@@ -89,18 +87,20 @@ class FaceControls {
       .sub(this.screen.center)
       .divide(this.screen.halfScale)
 
-    this.target.setX((1 - this.target.x) * SCREEN_HALF_WIDTH)
-    this.target.setY((1 - this.target.y) * SCREEN_HALF_HEIGHT)
+    if (!isNaN(this.target.x)) {
+      this.target.setX((1 - this.target.x) * SCREEN_HALF_WIDTH)
+      this.target.setY((1 - this.target.y) * SCREEN_HALF_HEIGHT)
 
-    this.kalmanState = this.kalman.filter({
-      previousCorrected: this.kalmanState,
-      observation: [this.target.x, this.target.y],
-    })
+      this.kalmanState = this.kalman.filter({
+        previousCorrected: this.kalmanState,
+        observation: [this.target.x, this.target.y],
+      })
 
-    const { mean } = this.kalmanState
+      const { mean } = this.kalmanState
 
-    this.target.setX(mean[0][0])
-    this.target.setY(mean[1][0])
+      this.target.setX(mean[0][0])
+      this.target.setY(mean[1][0])
+    }
 
     requestAnimationFrame(() => this.loop())
   }
