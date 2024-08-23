@@ -2,12 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Face Ninja</title>
-    
-    <script type="module" crossorigin src="/assets/index-c9f7fd1d.js"></script>
-    <link rel="stylesheet" href="/assets/index-918b8cd4.css">
+
+    <script type="module" crossorigin src="./assets/index-d4dc6cc6.js"></script>
+    <link rel="stylesheet" href="./assets/index-918b8cd4.css" />
   </head>
   <body>
     <button id="screen">Screen</button>
@@ -15,7 +15,7 @@
     <!-- <script type="module" src="/src/v2/main.ts"></script> -->
     <!-- <script type="module" src="/src/v3/main.ts"></script> -->
     <!-- <script type="module" src="/src/v4/main.ts"></script> -->
-    
+
     <script>
       const screenButton = document.getElementById('screen')
       const a = document.createElement('a')
@@ -27,7 +27,7 @@
       screenButton.onclick = () => {
         const canvas = document.querySelector('#faceContainer canvas')
 
-        canvas.toBlob(blob => {
+        canvas.toBlob((blob) => {
           const url = window.URL.createObjectURL(blob)
 
           a.href = url
@@ -39,4 +39,3 @@
     </script>
   </body>
 </html>
-
