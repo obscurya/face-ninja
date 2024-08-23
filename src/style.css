@@ -16,28 +16,28 @@ body {
   right: 0;
   display: flex;
   max-width: 700px;
+}
 
-  > * {
-    max-width: 100%;
-  }
+#faceContainer > * {
+  max-width: 100%;
+}
 
-  & video {
-    visibility: hidden;
-  }
+#faceContainer video {
+  visibility: hidden;
+}
 
-  & canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: auto !important;
-  }
+#faceContainer canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: auto !important;
+}
 
-  & div {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-  }
+#faceContainer div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 
 #coords {
